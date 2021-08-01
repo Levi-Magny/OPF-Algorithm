@@ -2,23 +2,37 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <limits>
 #include "Vertice.h"
 #include "Banana.h"
 #include "Spirals.h"
+
+using namespace std;
 
 class Grafo {
 private:
     int tamanho;
     vector<Vertice> vertices;
-    int **matrizAdj;
+    double **matrizAdj;
+    int size;
+    void criarMatriz(int size);
+    bool buscarVertices(string path, string classe);
 public:
     Grafo(){
         buscarVertices("./files/banana.txt", "banana");
         buscarVertices("./files/spirals.txt", "spirals");
+        size = vertices.size();
+        criarMatriz(size);
     }
     int getSize(){return vertices.size();}
-    bool buscarVertices(string path, string classe);
 };
+
+void Grafo::criarMatriz(int size){
+    matrizAdj = new double*[size];
+    for(int i = 0; i < size; i++){
+        matrizAdj[i] = new double[size] ();
+    }
+}
 
 /**
  * @brief busca as coordenadas dos vertices dentro dos seus respectivos arquivos.
@@ -60,9 +74,6 @@ bool Grafo::buscarVertices(string path, string classe){
     return false;
 }
 
-using namespace std;
-
 int main(){
    Grafo g;
-   cout << "Quantidade de vertices: " << g.getSize();
 }
