@@ -4,6 +4,8 @@
         "iosfwd": "cpp",
         "deque": "cpp",
         "string": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "limits": "cpp",
+        "cmath": "cpp"
     }
 }

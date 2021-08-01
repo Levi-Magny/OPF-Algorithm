@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <limits>
+#include <math.h>
 #include "Vertice.h"
 #include "Banana.h"
 #include "Spirals.h"
@@ -17,15 +18,51 @@ private:
     int size;
     void criarMatriz(int size);
     bool buscarVertices(string path, string classe);
+    double calcEuclDist(Vertice& a, Vertice& b);
 public:
     Grafo(){
         buscarVertices("./files/banana.txt", "banana");
         buscarVertices("./files/spirals.txt", "spirals");
         size = vertices.size();
         criarMatriz(size);
+        gerarGrafo();
     }
     int getSize(){return vertices.size();}
+    void gerarGrafo();
+    double matrizValue(int i, int j){
+        cout << vertices[i].get_x() << ", " << vertices[i].get_y() << ", " << vertices[i].get_z() << endl;
+        cout << vertices[j].get_x() << ", " << vertices[j].get_y() << ", " << vertices[j].get_z() << endl;
+        return matrizAdj[i][j];
+    }
 };
+
+void Grafo::gerarGrafo(){
+    for(int i = 0; i < size; i++){
+        for (int j = 0; j < size; j++){
+            if(i == j){
+                matrizAdj[i][j] = numeric_limits<int>::max();
+            } else if (matrizAdj[i][j] < numeric_limits<int>::max()){
+                double dist = calcEuclDist(vertices[i], vertices[j]);
+                matrizAdj[i][j] = dist;
+                matrizAdj[j][i] = dist;
+            }
+        }
+    }
+}
+/**
+ * @brief Calcula a distancia euclidiana entre dois pontos em R3
+ * 
+ * @param a 
+ * @param b 
+ * @return double distancia entre 2 pontos
+ */
+double Grafo::calcEuclDist(Vertice& a, Vertice& b){
+    double dist;
+
+    dist = sqrt(pow((b.get_x() - a.get_x()),2) + pow((b.get_y() - a.get_y()),2) + pow((b.get_z() - a.get_z()),2));
+
+    return dist;
+}
 
 void Grafo::criarMatriz(int size){
     matrizAdj = new double*[size];
@@ -45,26 +82,16 @@ void Grafo::criarMatriz(int size){
 bool Grafo::buscarVertices(string path, string classe){
     ifstream file(path);
     if(file.is_open()){
-        string str;
-        while (getline(file, str)){
-            double coord[3];
-            int i = 0;
-            string word = "";
-            for(auto s:str){
-                if(s == ' ' || s == '\n'){
-                    coord[i] = stod(word);
-                    i++;
-                    word = "";
-                }
-                else{
-                    word += s;
-                }
-            }
+        while (!file.eof()){
+            string x, y, z;
+            file >> x >> y >> z;
             if(classe == "banana"){
-                Banana nv = Banana(coord[0], coord[1], coord[2]);
+                Banana nv = Banana(stod(x), stod(y), stod(z));
                 vertices.push_back(nv);
             } else {
-                Spirals nv = Spirals(coord[0], coord[1], coord[2]);
+                // cout << x << ", " << y << ", " << z << endl;
+                Spirals nv = Spirals(stod(x), stod(y), stod(z));
+                cout << nv.get_x() << ", " << nv.get_y() << ", " << nv.get_z() << endl;
                 vertices.push_back(nv);
             }
         }
@@ -76,4 +103,5 @@ bool Grafo::buscarVertices(string path, string classe){
 
 int main(){
    Grafo g;
+   //cout << g.matrizValue(1,2);
 }

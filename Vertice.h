@@ -27,6 +27,15 @@ public:
         y = yc;
         z = zc;
     }
+    double get_x(){
+        return x;
+    }
+    double get_y(){
+        return y;
+    }
+    double get_z(){
+        return z;
+    }
 };
 
 #endif
