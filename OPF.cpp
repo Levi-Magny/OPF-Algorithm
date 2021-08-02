@@ -29,11 +29,7 @@ public:
     }
     int getSize(){return vertices.size();}
     void gerarGrafo();
-    double matrizValue(int i, int j){
-        cout << vertices[i].get_x() << ", " << vertices[i].get_y() << ", " << vertices[i].get_z() << endl;
-        cout << vertices[j].get_x() << ", " << vertices[j].get_y() << ", " << vertices[j].get_z() << endl;
-        return matrizAdj[i][j];
-    }
+    double matrizValue(int i, int j){return matrizAdj[i][j];}
 };
 
 void Grafo::gerarGrafo(){
@@ -89,9 +85,7 @@ bool Grafo::buscarVertices(string path, string classe){
                 Banana nv = Banana(stod(x), stod(y), stod(z));
                 vertices.push_back(nv);
             } else {
-                // cout << x << ", " << y << ", " << z << endl;
                 Spirals nv = Spirals(stod(x), stod(y), stod(z));
-                cout << nv.get_x() << ", " << nv.get_y() << ", " << nv.get_z() << endl;
                 vertices.push_back(nv);
             }
         }
@@ -103,5 +97,5 @@ bool Grafo::buscarVertices(string path, string classe){
 
 int main(){
    Grafo g;
-   //cout << g.matrizValue(1,2);
+   cout << g.matrizValue(1,2);
 }
