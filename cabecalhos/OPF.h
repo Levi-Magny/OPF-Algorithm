@@ -20,7 +20,7 @@ using namespace std;
 class OPF {
 private:
     int tamanho;
-    vector<Vertice> vertices;
+    vector<Vertice> vertices; // polimorfismo: qualquer classe filha de 'Vertice' é um Vertice
     double **matrizAdj;
     int size;
     void criarMatriz(int size);
@@ -38,7 +38,12 @@ public:
     void gerarOPF();
     double matrizValue(int i, int j){return matrizAdj[i][j];}
 };
-
+/**
+ * @brief Cria um grafo completo com arestas ponderadas de acordo com a
+ * distância euclidiana entre os dois vertices.
+ * 
+ * A diagonal principal (que indicaria laços) é marcada como 'infinito'
+ */
 void OPF::gerarOPF(){
     for(int i = 0; i < size; i++){
         for (int j = 0; j < size; j++){
@@ -60,13 +65,14 @@ void OPF::gerarOPF(){
  * @return double distancia entre 2 pontos
  */
 double OPF::calcEuclDist(Vertice& a, Vertice& b){
-    double dist;
-
-    dist = sqrt(pow((b.get_x() - a.get_x()),2) + pow((b.get_y() - a.get_y()),2) + pow((b.get_z() - a.get_z()),2));
-
-    return dist;
+    return sqrt(pow((b.get_x() - a.get_x()),2) + pow((b.get_y() - a.get_y()),2) + pow((b.get_z() - a.get_z()),2));
 }
 
+/**
+ * @brief Inicializa a matriz com '0's
+ * 
+ * @param size Quantidade de vertices do grafo
+ */
 void OPF::criarMatriz(int size){
     matrizAdj = new double*[size];
     for(int i = 0; i < size; i++){

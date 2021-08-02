@@ -6,13 +6,20 @@
 using namespace std;
 
 /**
- * @brief Classe do tipo Spirals
+ * @brief Classe do tipo Spirals herdada da classe grafo
  * 
  */
 class Spirals : public Vertice {
 private:
     string classe = "spirals";
 public:
+/**
+     * @brief Constroi um novo vertice do tipo Spirals
+     * 
+     * @param xc Coordenada x
+     * @param yc Coordenada y
+     * @param zc Coordenada z
+     */
     Spirals(double xc, double yc, double zc) : Vertice(xc, yc, zc){
         x = xc;
         y = yc;
