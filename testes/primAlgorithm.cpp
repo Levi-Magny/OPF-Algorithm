@@ -11,21 +11,21 @@ class Grafo {
 private:
     int tamanho;
     vector<int> vertices; // polimorfismo: qualquer classe filha de 'Vertice' é um Vertice
-    double matrizAdj[5][5];
-    int *MST;
-    int size;
-    void criarMatriz(int size);
-    bool buscarVertices(string path, string classe);
-public:
-    Grafo(){
-        double matrizAdj[5][5] {
+    double matrizAdj[5][5] = {
             {INF, 5.0, 4.0, 6.0, 9.0},
             {5.0, INF, 1.0, 2.0, 3.0},
             {4.0, 1.0, INF, 2.0, 1.0},
             {6.0, 2.0, 2.0, INF, 7.0},
             {9.0, 3.0, 1.0, 7.0, INF}
         };
+    int *MST;
+    int size;
+    void criarMatriz(int size);
+    bool buscarVertices(string path, string classe);
+public:
+    Grafo(){
         size = 5;
+        // cout << matrizAdj[2][3];
     }
     int getSize(){return size;}
     double matrizValue(int i, int j){return matrizAdj[i][j];}
@@ -62,16 +62,12 @@ void Grafo::primsAlg(){
                 int v = i;
                 double weight = matrizAdj[u][i];
                 if(!inMST[v] && cost[v] > weight){
-                    // cout << "got here\n";
                     cost[v] = weight;
                     Pq.push(make_pair(cost[v], v));
                     pai[v] = u;
                 }
             }
         }
-    }
-    for(int i = 0; i < size; i++){
-        cout << i << " " << pai[i] << endl;
     }
 }
 

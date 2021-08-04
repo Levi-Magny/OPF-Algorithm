@@ -36,7 +36,6 @@ private:
     int tamanho;
     vector<Vertice> vertices; // polimorfismo: qualquer classe filha de 'Vertice' é um Vertice
     double **matrizAdj;
-    int *MST;
     int size;
     void criarMatriz(int size);
     bool buscarVertices(string path, string classe);
@@ -47,6 +46,12 @@ public:
         size = vertices.size();
         criarMatriz(size);
         gerarOPF();
+    }
+    ~OPF(){
+        for(int i = 0; i < size; i++){
+            delete[] matrizAdj[i];
+        }
+        delete[] matrizAdj;
     }
     int getSize(){return vertices.size();}
     void gerarOPF();
