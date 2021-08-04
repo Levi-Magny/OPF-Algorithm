@@ -8,8 +8,6 @@
 #include <limits>
 #include <math.h>
 #include "Vertice.h"
-#include "Banana.h"
-#include "Spirals.h"
 
 using namespace std;
 
@@ -49,7 +47,7 @@ void OPF::gerarOPF(){
         for (int j = 0; j < size; j++){
             if(i == j){
                 matrizAdj[i][j] = numeric_limits<int>::max();
-            } else if (matrizAdj[i][j] < numeric_limits<int>::max()){
+            } else if (matrizAdj[i][j] == 0){
                 double dist = calcEuclDist(vertices[i], vertices[j]);
                 matrizAdj[i][j] = dist;
                 matrizAdj[j][i] = dist;
@@ -90,17 +88,16 @@ void OPF::criarMatriz(int size){
  */
 bool OPF::buscarVertices(string path, string classe){
     ifstream file(path);
+    string firstLine;
+    getline(file, firstLine);
     if(file.is_open()){
         while (!file.eof()){
             string x, y, z;
             file >> x >> y >> z;
-            if(classe == "banana"){
-                Banana nv = Banana(stod(x), stod(y), stod(z));
-                vertices.push_back(nv);
-            } else {
-                Spirals nv = Spirals(stod(x), stod(y), stod(z));
-                vertices.push_back(nv);
-            }
+
+            Vertice nv = Vertice(stod(x), stod(y), stod(z));
+            nv.set_class(classe);
+            vertices.push_back(nv);
         }
         file.close();
         return true;

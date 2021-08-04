@@ -14,6 +14,7 @@ protected:
     double x;
     double y;
     double z;
+    string classe;
 public:
     /**
      * @brief Construct a new Vertice object
@@ -35,6 +36,12 @@ public:
     }
     double get_z(){
         return z;
+    }
+    string get_class(){
+        return classe;
+    }
+    void set_class(string valor){
+        classe = valor;
     }
 };
 
