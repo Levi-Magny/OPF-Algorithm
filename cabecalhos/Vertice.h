@@ -7,26 +7,24 @@ using namespace std;
 /**
  * @brief Classe geral para um vertice do grafo
  * 
- * ...Provavelmente vou mudar pra usar apenas essa classe
  */
 class Vertice {
-protected:
+private:
     double x;
     double y;
-    double z;
-    string classe;
+    int nClasse;
 public:
     /**
      * @brief Construct a new Vertice object
      * 
      * @param xc Coordenada x do vertice
      * @param yc Coordenada y do vertice
-     * @param zc Coordenada z do vertice
+     * @param classe classe do vertice
      */
-    Vertice(double xc, double yc, double zc){
+    Vertice(double xc, double yc, int classe){
         x = xc;
         y = yc;
-        z = zc;
+        nClasse = classe;
     }
     double get_x(){
         return x;
@@ -34,14 +32,11 @@ public:
     double get_y(){
         return y;
     }
-    double get_z(){
-        return z;
+    int get_class(){
+        return nClasse;
     }
-    string get_class(){
-        return classe;
-    }
-    void set_class(string valor){
-        classe = valor;
+    void set_class(int valor){
+        nClasse = valor;
     }
 };
 

@@ -6,6 +6,7 @@
         "string": "cpp",
         "vector": "cpp",
         "limits": "cpp",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "new": "cpp"
     }
 }

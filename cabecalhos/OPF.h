@@ -43,7 +43,6 @@ private:
     double calcEuclDist(Vertice& a, Vertice& b);
 public:
     OPF(){
-        buscarVertices("./files/banana.txt", "banana");
         buscarVertices("./files/spirals.txt", "spirals");
         size = vertices.size();
         criarMatriz(size);
@@ -81,7 +80,7 @@ void OPF::gerarOPF(){
  * @return double distancia entre 2 pontos
  */
 double OPF::calcEuclDist(Vertice& a, Vertice& b){
-    return sqrt(pow((b.get_x() - a.get_x()),2) + pow((b.get_y() - a.get_y()),2) + pow((b.get_z() - a.get_z()),2));
+    return sqrt(pow((b.get_x() - a.get_x()),2) + pow((b.get_y() - a.get_y()),2));
 }
 
 /**
@@ -110,10 +109,11 @@ bool OPF::buscarVertices(string path, string classe){
     getline(file, firstLine);
     if(file.is_open()){
         while (!file.eof()){
-            string x, y, z;
-            file >> x >> y >> z;
+            string x, y;
+            int classe;
+            file >> x >> y >> classe;
 
-            Vertice nv = Vertice(stod(x), stod(y), stod(z));
+            Vertice nv = Vertice(stod(x), stod(y), classe);
             nv.set_class(classe);
             vertices.push_back(nv);
         }
