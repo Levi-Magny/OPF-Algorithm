@@ -56,7 +56,7 @@ public:
     int getSize(){return vertices.size();}
     void gerarOPF();
     double matrizValue(int i, int j){return matrizAdj[i][j];}
-    int* primsAlg();
+    void primsAlg();
 };
 /**
  * @brief Cria um grafo completo com arestas ponderadas de acordo com a
@@ -128,31 +128,43 @@ bool OPF::buscarVertices(string path, string classe){
     return false;
 }
 
-// int* OPF::primsAlg(){
-//     int i, j, dest, primeiro, NV = size, orig = 0;
-//     int *pai = new int[NV];
-//     int *visitado = new int[NV];
+void OPF::primsAlg(){
+    priority_queue<iPar, vector<iPar>, greater<iPar>> Pq;
 
-//     double menorPeso;
-//     for(i = 0; i < NV; i++){
-//         pai[i] = -1;
-//         visitado[i] = -1;
-//     }
+    double cost[size];
+    int pai[size], src = 0;
+    bool inMST[size];
+    for(int i = 0; i < size; i++){
+        cost[i] = INF;
+        pai[i] = -1;
+        inMST[i] = false;
+    }
+    cost[src] = 0.0;
+    pai[src] = 0.0;
+    Pq.push(make_pair(0.0, src));
 
-//     pai[orig] = orig;
-//     while(1){
-//         primeiro = 1;
-
-//         for (i = 0; i < NV; i++){
-//             if(pai[i] != -1){
-//                 for(int j = 0; j < NV; j++){
-//                     if(i == j)
-//                         continue;
-//                     if(pai[])
-//                 }
-//             }
-//         }
-//     }
-// }
+    while(!Pq.empty()){
+        int u = Pq.top().second;
+        cout << u << " -\n";
+        Pq.pop();
+        // considerar apenas o menor peso dos vertices
+        if(inMST[u]){
+            continue;
+        }
+        inMST[u] = true;
+        for(int i = 0; i < size; i++){
+            if(i != u){
+                //pega o indice do vertice e o peso da aresta que 
+                int v = i;
+                double weight = matrizAdj[u][i];
+                if(!inMST[v] && cost[v] > weight){
+                    cost[v] = weight;
+                    Pq.push(make_pair(cost[v], v));
+                    pai[v] = u;
+                }
+            }
+        }
+    }
+}
 
 #endif
