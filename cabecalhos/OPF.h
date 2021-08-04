@@ -123,47 +123,31 @@ bool OPF::buscarVertices(string path, string classe){
     return false;
 }
 
-int* OPF::primsAlg(){
-    priority_queue<iPar, vector<iPar>, greater<iPar>> Pq;
+// int* OPF::primsAlg(){
+//     int i, j, dest, primeiro, NV = size, orig = 0;
+//     int *pai = new int[NV];
+//     int *visitado = new int[NV];
 
-    double cost[size];
-    int pai[size], src = 0;
-    bool inMST[size];
-    for(int i = 0; i < size; i++){
-        cost[i] = INF;
-        pai[i] = -1;
-        inMST[i] = false;
-    }
-    cost[src] = 0.0;
-    pai[src] = src;
+//     double menorPeso;
+//     for(i = 0; i < NV; i++){
+//         pai[i] = -1;
+//         visitado[i] = -1;
+//     }
 
-    Pq.push(make_pair(0.0, src));
+//     pai[orig] = orig;
+//     while(1){
+//         primeiro = 1;
 
-    while(!Pq.empty()){
-        int u = Pq.top().second;
-        Pq.pop();
-
-        // considerar apenas o menor peso dos vertices
-        if(inMST[u]){
-            continue;
-        }
-
-        inMST[u] = true;
-
-        for(int i = 0; i < size; i++){
-            if(matrizAdj[u][i] != INF){
-                //pega o indice do vertice e o peso da aresta que 
-                int v = i;
-                double weight = matrizAdj[u][i];
-
-                if(!inMST && cost[v] > weight){
-                    cost[v] = weight;
-                    Pq.push(make_pair(cost[v], v));
-                    pai[v] = u;
-                }
-            }
-        }
-    }
-}
+//         for (i = 0; i < NV; i++){
+//             if(pai[i] != -1){
+//                 for(int j = 0; j < NV; j++){
+//                     if(i == j)
+//                         continue;
+//                     if(pai[])
+//                 }
+//             }
+//         }
+//     }
+// }
 
 #endif
