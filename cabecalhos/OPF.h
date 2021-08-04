@@ -7,9 +7,25 @@
 #include <vector>
 #include <limits>
 #include <math.h>
+#include <queue>
 #include "Vertice.h"
 
 using namespace std;
+
+const double INF = numeric_limits<double>::max();
+
+/**
+ * @brief 
+ * O primeiro valor é o custo e o segundo e o indice do vertice
+ */
+typedef pair<double, int> iPar;
+
+// serve de comparacao para a priority_queue
+/*struct compare {
+    bool operator()(double a, double b){
+        return a < b;
+    }
+};*/
 
 /**
  * @brief Grafo contendo o algoritmo de floresta de caminhos otimos
@@ -20,6 +36,7 @@ private:
     int tamanho;
     vector<Vertice> vertices; // polimorfismo: qualquer classe filha de 'Vertice' é um Vertice
     double **matrizAdj;
+    int *MST;
     int size;
     void criarMatriz(int size);
     bool buscarVertices(string path, string classe);
@@ -35,6 +52,7 @@ public:
     int getSize(){return vertices.size();}
     void gerarOPF();
     double matrizValue(int i, int j){return matrizAdj[i][j];}
+    int* primsAlg();
 };
 /**
  * @brief Cria um grafo completo com arestas ponderadas de acordo com a
@@ -46,7 +64,7 @@ void OPF::gerarOPF(){
     for(int i = 0; i < size; i++){
         for (int j = 0; j < size; j++){
             if(i == j){
-                matrizAdj[i][j] = numeric_limits<int>::max();
+                matrizAdj[i][j] = INF;
             } else if (matrizAdj[i][j] == 0){
                 double dist = calcEuclDist(vertices[i], vertices[j]);
                 matrizAdj[i][j] = dist;
@@ -103,6 +121,49 @@ bool OPF::buscarVertices(string path, string classe){
         return true;
     }
     return false;
+}
+
+int* OPF::primsAlg(){
+    priority_queue<iPar, vector<iPar>, greater<iPar>> Pq;
+
+    double cost[size];
+    int pai[size], src = 0;
+    bool inMST[size];
+    for(int i = 0; i < size; i++){
+        cost[i] = INF;
+        pai[i] = -1;
+        inMST[i] = false;
+    }
+    cost[src] = 0.0;
+    pai[src] = src;
+
+    Pq.push(make_pair(0.0, src));
+
+    while(!Pq.empty()){
+        int u = Pq.top().second;
+        Pq.pop();
+
+        // considerar apenas o menor peso dos vertices
+        if(inMST[u]){
+            continue;
+        }
+
+        inMST[u] = true;
+
+        for(int i = 0; i < size; i++){
+            if(matrizAdj[u][i] != INF){
+                //pega o indice do vertice e o peso da aresta que 
+                int v = i;
+                double weight = matrizAdj[u][i];
+
+                if(!inMST && cost[v] > weight){
+                    cost[v] = weight;
+                    Pq.push(make_pair(cost[v], v));
+                    pai[v] = u;
+                }
+            }
+        }
+    }
 }
 
 #endif
