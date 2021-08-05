@@ -30,10 +30,35 @@ public:
     int getSize(){return size;}
     double matrizValue(int i, int j){return matrizAdj[i][j];}
     void primsAlg();
+    double** novaMatriz();
+    void imprimeMatriz(double** matriz);
 };
+
+double** Grafo::novaMatriz(){
+    double **matriz;
+    matriz = new double*[size];
+
+    for(int i = 0; i < size; i++){
+        matriz[i] = new double[size] ();
+        for(int j = 0; j < size; j ++)
+            matriz[i][j] = -1.0;
+    }
+    return matriz;
+}
+
+void Grafo::imprimeMatriz(double** matriz){
+    for(int i = 0; i < size; i++){
+        for(int j = 0; j < size; j++){
+            cout << matriz[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
 
 void Grafo::primsAlg(){
     priority_queue<iPar, vector<iPar>, greater<iPar>> Pq;
+
+    double **nMatriz = novaMatriz();
 
     double cost[size];
     int pai[size], src = 0;
@@ -44,16 +69,20 @@ void Grafo::primsAlg(){
         inMST[i] = false;
     }
     cost[src] = 0.0;
-    pai[src] = 0.0;
+
     Pq.push(make_pair(0.0, src));
 
     while(!Pq.empty()){
         int u = Pq.top().second;
-        cout << u << " -\n";
+
         Pq.pop();
         // considerar apenas o menor peso dos vertices
         if(inMST[u]){
             continue;
+        }
+        if(pai[u] != -1 && !inMST[u]){
+            double value = matrizAdj[u][pai[u]];
+            nMatriz[u][pai[u]] = nMatriz[pai[u]][u] = value;
         }
         inMST[u] = true;
         for(int i = 0; i < size; i++){
@@ -69,6 +98,11 @@ void Grafo::primsAlg(){
             }
         }
     }
+    for(int i = 0; i < size; i++){
+        cout << i << " - " << pai[i] << endl;
+    }
+    cout << endl;
+    imprimeMatriz(nMatriz);
 }
 
 int main(){

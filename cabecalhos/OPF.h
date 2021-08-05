@@ -38,26 +38,38 @@ private:
     double **matrizAdj;
     int size;
     void criarMatriz(int size);
-    bool buscarVertices(string path, string classe);
+    bool buscarVertices(string path);
     double calcEuclDist(Vertice& a, Vertice& b);
+    void setMatrizAdj(double** MAdj){matrizAdj = MAdj;};
+    void excluiMatrizAdj();
 public:
     OPF(){
-        buscarVertices("./files/spirals.txt", "spirals");
+        // buscarVertices("./files/banana.txt");
+        buscarVertices("./files/spirals.txt");
         size = vertices.size();
         criarMatriz(size);
         gerarOPF();
+        primsAlg();
+        // imprimeMatriz();
     }
     ~OPF(){
-        for(int i = 0; i < size; i++){
-            delete[] matrizAdj[i];
-        }
-        delete[] matrizAdj;
+        excluiMatrizAdj();
     }
     int getSize(){return vertices.size();}
     void gerarOPF();
     double matrizValue(int i, int j){return matrizAdj[i][j];}
+    double** novaMatriz();
+    void imprimeMatriz();
     void primsAlg();
 };
+
+void OPF::excluiMatrizAdj(){
+    for(int i = 0; i < size; i++){
+        delete[] matrizAdj[i];
+    }
+    delete[] matrizAdj;
+}
+
 /**
  * @brief Cria um grafo completo com arestas ponderadas de acordo com a
  * distância euclidiana entre os dois vertices.
@@ -100,6 +112,15 @@ void OPF::criarMatriz(int size){
     }
 }
 
+void OPF::imprimeMatriz(){
+    for(int i = 0; i < size; i++){
+        for(int j = 0; j < size; j++){
+            cout << matrizAdj[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
 /**
  * @brief busca as coordenadas dos vertices dentro dos seus respectivos arquivos.
  * 
@@ -108,7 +129,7 @@ void OPF::criarMatriz(int size){
  * @return true se conseguir abrir o arquivo.
  * @return false se nao conseguir abrir o arquivo.
  */
-bool OPF::buscarVertices(string path, string classe){
+bool OPF::buscarVertices(string path){
     ifstream file(path);
     string firstLine;
     getline(file, firstLine);
@@ -128,8 +149,22 @@ bool OPF::buscarVertices(string path, string classe){
     return false;
 }
 
+double** OPF::novaMatriz(){
+    double **matriz;
+    matriz = new double*[size];
+
+    for(int i = 0; i < size; i++){
+        matriz[i] = new double[size] ();
+        for(int j = 0; j < size; j++)
+            matriz[i][j] = -1.0;
+    }
+    return matriz;
+}
+
 void OPF::primsAlg(){
     priority_queue<iPar, vector<iPar>, greater<iPar>> Pq;
+
+    double **nMatriz = novaMatriz();
 
     double cost[size];
     int pai[size], src = 0;
@@ -140,16 +175,19 @@ void OPF::primsAlg(){
         inMST[i] = false;
     }
     cost[src] = 0.0;
-    pai[src] = 0.0;
+    
     Pq.push(make_pair(0.0, src));
 
     while(!Pq.empty()){
         int u = Pq.top().second;
-        cout << u << " -\n";
         Pq.pop();
         // considerar apenas o menor peso dos vertices
         if(inMST[u]){
             continue;
+        }
+        if(pai[u] != -1 && !inMST[u]){
+            double value = matrizAdj[u][pai[u]];
+            nMatriz[u][pai[u]] = nMatriz[pai[u]][u] = value;
         }
         inMST[u] = true;
         for(int i = 0; i < size; i++){
@@ -165,6 +203,10 @@ void OPF::primsAlg(){
             }
         }
     }
+    for(int i = 0; i < size; i++){
+        cout << i << " - " << pai[i] << endl;
+    }
+    setMatrizAdj(nMatriz);
 }
 
 #endif
