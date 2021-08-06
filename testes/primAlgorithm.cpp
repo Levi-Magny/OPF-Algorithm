@@ -41,7 +41,7 @@ double** Grafo::novaMatriz(){
     for(int i = 0; i < size; i++){
         matriz[i] = new double[size] ();
         for(int j = 0; j < size; j ++)
-            matriz[i][j] = -1.0;
+            matriz[i][j] = 0;
     }
     return matriz;
 }

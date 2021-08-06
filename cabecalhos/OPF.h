@@ -34,13 +34,13 @@ typedef pair<double, int> iPar;
 class OPF {
 private:
     int tamanho;
-    vector<Vertice> vertices; // polimorfismo: qualquer classe filha de 'Vertice' é um Vertice
+    vector<Vertice> vertices;
     double **matrizAdj;
     int size;
     void criarMatriz(int size);
     bool buscarVertices(string path);
     double calcEuclDist(Vertice& a, Vertice& b);
-    void setMatrizAdj(double** MAdj){matrizAdj = MAdj;};
+    void setMatrizAdj(double** MAdj);
     void excluiMatrizAdj();
 public:
     OPF(){
@@ -60,6 +60,12 @@ public:
     double** novaMatriz();
     void primsAlg();
 };
+
+void OPF::setMatrizAdj(double** MAdj){
+    excluiMatrizAdj();
+    matrizAdj = MAdj;
+};
+
 /**
  * @brief metodo para desalocar a memoria alocada
  * 
