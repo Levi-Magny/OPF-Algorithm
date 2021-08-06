@@ -34,16 +34,18 @@ private:
     double calcEuclDist(Vertice& a, Vertice& b);
     void setMatrizAdj(double** MAdj);
     void excluiMatrizAdj();
-    void encontraPrototipo();
+    void DFS_EncontraPrototipo(int v, bool *visitado, bool jaEncontrado);
 public:
     OPF(){
         // buscarVertices("./files/banana.txt");
-        buscarVertices("./files/spirals.txt");
+        // buscarVertices("./files/spirals.txt");
+        buscarVertices("./files/teste.txt");
         size = vertices.size();
         criarMatriz(size);
         gerarOPF();
         primsAlg();
-        encontraPrototipo();
+        bool *visitado = new bool[size];
+        DFS_EncontraPrototipo(0, visitado, false);
     }
     ~OPF(){
         excluiMatrizAdj();
@@ -55,14 +57,27 @@ public:
     void primsAlg();
 };
 
-void OPF::encontraPrototipo() {
-    for(int i = 0; i < size; i++) {
-        for(int j = 0; j < size; j++) {
-            if(matrizAdj[i][j] != -1 && vertices.at(i).get_class() != vertices.at(j).get_class()) {
-                vertices.at(i).set_prototipo();
-                vertices.at(j).set_prototipo();
-                cout << "I: " << i << " J: " << j;
-                return;
+/**
+ * @brief método que realiza uma "busca por profundidade".
+ * neste caso, ele apenas está percorrento e atualizando o valor de 'visitado'.
+ * Essa estratégia é baseada na programação dinâmica.
+ * 
+ * @param v vértice atual 
+ * @param visitado vetor que guarda o estado atual dos vértices quanto a busca.
+ */
+void OPF::DFS_EncontraPrototipo(int v, bool *visitado, bool jaEncontrado) {
+    if(!visitado[v]){ // verifica se o vértice ja foi visitado
+        visitado[v] = true; // se nao foi, marca como visitado.
+        for(int i = 0; i < size && !jaEncontrado; i++) {
+            if(matrizAdj[v][i] != -1){ // procura vertices adjacentes ao atual
+                if(vertices.at(i).get_class() != vertices.at(v).get_class()) {
+                    vertices.at(i).set_prototipo();
+                    vertices.at(v).set_prototipo();
+                    cout << "I: " << i << " v: " << v << endl;
+                    jaEncontrado = !jaEncontrado;
+                    return;
+                }
+                DFS_EncontraPrototipo(i, visitado, jaEncontrado); // quando acha, vai para o vertice encontrado recursivamente.
             }
         }
     }
@@ -79,7 +94,7 @@ void OPF::setMatrizAdj(double** MAdj){
     for(int i = 0; i < size; i++) {
         cout << i << "::=> ";
         for(int j = 0; j < size; j++) {
-            cout << matrizAdj[i][j] << " ";
+            cout << matrizAdj[i][j] << "            ";
         }
         cout << endl;
     }
