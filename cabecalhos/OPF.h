@@ -50,7 +50,6 @@ public:
         criarMatriz(size);
         gerarOPF();
         primsAlg();
-        // imprimeMatriz();
     }
     ~OPF(){
         excluiMatrizAdj();
@@ -59,10 +58,12 @@ public:
     void gerarOPF();
     double matrizValue(int i, int j){return matrizAdj[i][j];}
     double** novaMatriz();
-    void imprimeMatriz();
     void primsAlg();
 };
-
+/**
+ * @brief metodo para desalocar a memoria alocada
+ * 
+ */
 void OPF::excluiMatrizAdj(){
     for(int i = 0; i < size; i++){
         delete[] matrizAdj[i];
@@ -112,15 +113,6 @@ void OPF::criarMatriz(int size){
     }
 }
 
-void OPF::imprimeMatriz(){
-    for(int i = 0; i < size; i++){
-        for(int j = 0; j < size; j++){
-            cout << matrizAdj[i][j] << " ";
-        }
-        cout << endl;
-    }
-}
-
 /**
  * @brief busca as coordenadas dos vertices dentro dos seus respectivos arquivos.
  * 
@@ -149,6 +141,11 @@ bool OPF::buscarVertices(string path){
     return false;
 }
 
+/**
+ * @brief Aloca memoria para uma nova matriz de adjacencias
+ * 
+ * @return double** retorna a matriz
+ */
 double** OPF::novaMatriz(){
     double **matriz;
     matriz = new double*[size];
@@ -161,14 +158,20 @@ double** OPF::novaMatriz(){
     return matriz;
 }
 
+/**
+ * @brief Algoritmo de Prim para Minimum Spanning Tree
+ * 
+ */
 void OPF::primsAlg(){
     priority_queue<iPar, vector<iPar>, greater<iPar>> Pq;
 
     double **nMatriz = novaMatriz();
 
-    double cost[size];
-    int pai[size], src = 0;
-    bool inMST[size];
+    double cost[size]; // custo/chave dos vertices
+    int pai[size], src = 0; // Guarda o valor dos vertices pai de cada vertice.
+    bool inMST[size]; // Insere o vertice na MST
+
+    // Inicializa os valores
     for(int i = 0; i < size; i++){
         cost[i] = INF;
         pai[i] = -1;
@@ -178,13 +181,17 @@ void OPF::primsAlg(){
     
     Pq.push(make_pair(0.0, src));
 
+    // enquanto a fila de prioridades contiver algum vertice
     while(!Pq.empty()){
         int u = Pq.top().second;
         Pq.pop();
+
         // considerar apenas o menor peso dos vertices
         if(inMST[u]){
             continue;
         }
+
+        // insere aresta ma matriz de adjacências 
         if(pai[u] != -1 && !inMST[u]){
             double value = matrizAdj[u][pai[u]];
             nMatriz[u][pai[u]] = nMatriz[pai[u]][u] = value;
