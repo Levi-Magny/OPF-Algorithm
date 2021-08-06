@@ -9,7 +9,6 @@
 #include <math.h>
 #include <queue>
 #include "Vertice.h"
-
 using namespace std;
 
 const double INF = numeric_limits<double>::max();
@@ -19,13 +18,6 @@ const double INF = numeric_limits<double>::max();
  * O primeiro valor é o custo e o segundo e o indice do vertice
  */
 typedef pair<double, int> iPar;
-
-// serve de comparacao para a priority_queue
-/*struct compare {
-    bool operator()(double a, double b){
-        return a < b;
-    }
-};*/
 
 /**
  * @brief Grafo contendo o algoritmo de floresta de caminhos otimos
@@ -42,6 +34,7 @@ private:
     double calcEuclDist(Vertice& a, Vertice& b);
     void setMatrizAdj(double** MAdj);
     void excluiMatrizAdj();
+    void encontraPrototipo();
 public:
     OPF(){
         // buscarVertices("./files/banana.txt");
@@ -50,6 +43,7 @@ public:
         criarMatriz(size);
         gerarOPF();
         primsAlg();
+        encontraPrototipo();
     }
     ~OPF(){
         excluiMatrizAdj();
@@ -61,9 +55,34 @@ public:
     void primsAlg();
 };
 
+void OPF::encontraPrototipo() {
+    for(int i = 0; i < size; i++) {
+        for(int j = 0; j < size; j++) {
+            if(matrizAdj[i][j] != -1 && vertices.at(i).get_class() != vertices.at(j).get_class()) {
+                vertices.at(i).set_prototipo();
+                vertices.at(j).set_prototipo();
+                cout << "I: " << i << " J: " << j;
+                return;
+            }
+        }
+    }
+}
+
+/**
+ * @brief Modifica a matrizAdj
+ * 
+ * @param MAdj Nova matriz
+ */
 void OPF::setMatrizAdj(double** MAdj){
     excluiMatrizAdj();
     matrizAdj = MAdj;
+    for(int i = 0; i < size; i++) {
+        cout << i << "::=> ";
+        for(int j = 0; j < size; j++) {
+            cout << matrizAdj[i][j] << " ";
+        }
+        cout << endl;
+    }
 };
 
 /**
@@ -96,6 +115,7 @@ void OPF::gerarOPF(){
         }
     }
 }
+
 /**
  * @brief Calcula a distancia euclidiana entre dois pontos em R3
  * 
@@ -215,9 +235,6 @@ void OPF::primsAlg(){
                 }
             }
         }
-    }
-    for(int i = 0; i < size; i++){
-        cout << i << " - " << pai[i] << endl;
     }
     setMatrizAdj(nMatriz);
 }

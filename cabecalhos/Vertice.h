@@ -13,6 +13,8 @@ private:
     double x;
     double y;
     int nClasse;
+    bool prototipo;
+    double custo;
 public:
     /**
      * @brief Construct a new Vertice object
@@ -25,6 +27,15 @@ public:
         x = xc;
         y = yc;
         nClasse = classe;
+        prototipo = false;
+        custo = -1.0;
+    }
+    bool get_prototipo() {
+        return prototipo;
+    }
+    void set_prototipo() {
+        prototipo = !prototipo;
+        custo = 0;
     }
     double get_x(){
         return x;
