@@ -8,6 +8,7 @@
 #include <limits>
 #include <math.h>
 #include <queue>
+#include <algorithm>
 #include "Vertice.h"
 using namespace std;
 
@@ -37,43 +38,26 @@ private:
     void excluiMatrizAdj();
     void DFS_EncontraPrototipo(int v, bool *visitado, bool jaEncontrado);
     void gerarCustos(int v, bool *visitado, double maiorPeso);
-    void encontraClasse();
+    double** novaMatriz();
+    void primsAlg();
+    void treinamento();
+    void gerarOPF();
 public:
-    OPF(){
-        // buscarVertices("./files/banana.txt");
-        buscarVertices("./files/spirals.txt");
-        // buscarVertices("./files/teste.txt");
+    OPF(string path){
+        buscarVertices(path);
         size = vertices.size();
         criarMatriz(size);
         gerarOPF();
         treinamento();
-        encontraClasse();
     }
     ~OPF(){
         excluiMatrizAdj();
     }
     int getSize(){return vertices.size();}
-    void gerarOPF();
     double matrizValue(int i, int j){return matrizAdj[i][j];}
-    double** novaMatriz();
-    void primsAlg();
-    void treinamento();
+    void Classificar(Vertice vertice);
 };
 
-void OPF::encontraClasse() {
-    Vertice vertice = Vertice(0.05513566, 0.5597890);
-    double dist, maior;
-    iPar menorEclasse;
-    menorEclasse.first = INF;
-    for(int i = 0; i < size; i++) {
-        dist = calcEuclDist(vertices.at(i), vertice);
-        maior = dist > vertices.at(i).get_custo() ? dist : vertices.at(i).get_custo();
-        menorEclasse.first = menorEclasse.first > maior ? maior : menorEclasse.first;
-        menorEclasse.second = i;
-    }
-    cout << "O vertice tem custo: " << menorEclasse.first << ". Pertence a classe: " 
-    << vertices.at(menorEclasse.second).get_class() << endl;
-}
 
 /**
  * @brief Modifica a matrizAdj
@@ -300,6 +284,25 @@ void OPF::gerarCustos(int v, bool *visitado, double maiorPeso) {
             }
         }
     }
+}
+
+void OPF::Classificar(Vertice vertice) {
+
+    // cout << calcEuclDist(vertice, vertices[0]);
+
+    double dist, maior;
+    iPar menorEclasse;
+    menorEclasse.first = INF;
+    for(int i = 0; i < size; i++) {
+        dist = calcEuclDist(vertices.at(i), vertice);
+        maior = dist > vertices.at(i).get_custo() ? dist : vertices.at(i).get_custo();
+        if (menorEclasse.first > maior){
+            menorEclasse.first = maior;
+            menorEclasse.second = i;
+        }
+    }
+    cout << "O vertice tem custo: " << menorEclasse.first << ". Pertence a classe: " 
+    << vertices.at(menorEclasse.second).get_class() << endl;
 }
 
 #endif
