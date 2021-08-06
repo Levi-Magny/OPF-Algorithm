@@ -38,8 +38,8 @@ private:
 public:
     OPF(){
         // buscarVertices("./files/banana.txt");
-        // buscarVertices("./files/spirals.txt");
-        buscarVertices("./files/teste.txt");
+        buscarVertices("./files/spirals.txt");
+        // buscarVertices("./files/teste.txt");
         size = vertices.size();
         criarMatriz(size);
         gerarOPF();
@@ -71,8 +71,9 @@ void OPF::DFS_EncontraPrototipo(int v, bool *visitado, bool jaEncontrado) {
         for(int i = 0; i < size && !jaEncontrado; i++) {
             if(matrizAdj[v][i] != -1){ // procura vertices adjacentes ao atual
                 if(vertices.at(i).get_class() != vertices.at(v).get_class()) {
-                    vertices.at(i).set_prototipo();
                     vertices.at(v).set_prototipo();
+                    vertices.at(i).set_prototipo();
+                    matrizAdj[v][i] = matrizAdj[i][v] = -1;
                     cout << "I: " << i << " v: " << v << endl;
                     jaEncontrado = !jaEncontrado;
                     return;
@@ -91,13 +92,13 @@ void OPF::DFS_EncontraPrototipo(int v, bool *visitado, bool jaEncontrado) {
 void OPF::setMatrizAdj(double** MAdj){
     excluiMatrizAdj();
     matrizAdj = MAdj;
-    for(int i = 0; i < size; i++) {
-        cout << i << "::=> ";
-        for(int j = 0; j < size; j++) {
-            cout << matrizAdj[i][j] << "            ";
-        }
-        cout << endl;
-    }
+    // for(int i = 0; i < size; i++) {
+    //     cout << i << "::=> ";
+    //     for(int j = 0; j < size; j++) {
+    //         cout << matrizAdj[i][j] << " ";
+    //     }
+    //     cout << endl;
+    // }
 };
 
 /**
