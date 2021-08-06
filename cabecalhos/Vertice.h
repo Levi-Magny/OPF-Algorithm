@@ -13,7 +13,6 @@ private:
     double x;
     double y;
     int nClasse;
-    bool prototipo;
     double custo;
 public:
     /**
@@ -27,15 +26,14 @@ public:
         x = xc;
         y = yc;
         nClasse = classe;
-        prototipo = false;
         custo = -1.0;
     }
-    bool get_prototipo() {
-        return prototipo;
+    double get_custo(){
+        return custo;
     }
-    void set_prototipo() {
-        prototipo = !prototipo;
-        custo = 0;
+
+    void set_custo(double valor){
+        custo = valor;
     }
     double get_x(){
         return x;

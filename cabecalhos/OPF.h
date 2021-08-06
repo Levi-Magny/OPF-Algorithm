@@ -29,12 +29,14 @@ private:
     vector<Vertice> vertices;
     double **matrizAdj;
     int size;
+    vector<int> prototipos;
     void criarMatriz(int size);
     bool buscarVertices(string path);
     double calcEuclDist(Vertice& a, Vertice& b);
     void setMatrizAdj(double** MAdj);
     void excluiMatrizAdj();
     void DFS_EncontraPrototipo(int v, bool *visitado, bool jaEncontrado);
+    void gerarCustos(int v, bool *visitado, double maiorPeso);
 public:
     OPF(){
         // buscarVertices("./files/banana.txt");
@@ -43,9 +45,6 @@ public:
         size = vertices.size();
         criarMatriz(size);
         gerarOPF();
-        primsAlg();
-        bool *visitado = new bool[size];
-        DFS_EncontraPrototipo(0, visitado, false);
     }
     ~OPF(){
         excluiMatrizAdj();
@@ -55,34 +54,8 @@ public:
     double matrizValue(int i, int j){return matrizAdj[i][j];}
     double** novaMatriz();
     void primsAlg();
+    void treinamento();
 };
-
-/**
- * @brief método que realiza uma "busca por profundidade".
- * neste caso, ele apenas está percorrento e atualizando o valor de 'visitado'.
- * Essa estratégia é baseada na programação dinâmica.
- * 
- * @param v vértice atual 
- * @param visitado vetor que guarda o estado atual dos vértices quanto a busca.
- */
-void OPF::DFS_EncontraPrototipo(int v, bool *visitado, bool jaEncontrado) {
-    if(!visitado[v]){ // verifica se o vértice ja foi visitado
-        visitado[v] = true; // se nao foi, marca como visitado.
-        for(int i = 0; i < size && !jaEncontrado; i++) {
-            if(matrizAdj[v][i] != -1){ // procura vertices adjacentes ao atual
-                if(vertices.at(i).get_class() != vertices.at(v).get_class()) {
-                    vertices.at(v).set_prototipo();
-                    vertices.at(i).set_prototipo();
-                    matrizAdj[v][i] = matrizAdj[i][v] = -1;
-                    cout << "I: " << i << " v: " << v << endl;
-                    jaEncontrado = !jaEncontrado;
-                    return;
-                }
-                DFS_EncontraPrototipo(i, visitado, jaEncontrado); // quando acha, vai para o vertice encontrado recursivamente.
-            }
-        }
-    }
-}
 
 /**
  * @brief Modifica a matrizAdj
@@ -165,8 +138,10 @@ void OPF::criarMatriz(int size){
  */
 bool OPF::buscarVertices(string path){
     ifstream file(path);
-    string firstLine;
-    getline(file, firstLine);
+    string qtdV, algo;
+    int qtdC;
+    file >> qtdV >> algo >> qtdC;
+    // getline(file, firstLine);
     if(file.is_open()){
         while (!file.eof()){
             string x, y;
@@ -198,6 +173,21 @@ double** OPF::novaMatriz(){
             matriz[i][j] = -1.0;
     }
     return matriz;
+}
+
+void OPF::treinamento(){
+    // Gerando MST
+    primsAlg();
+
+    // encontrando prototipos
+    bool *visitado = new bool[size];
+    DFS_EncontraPrototipo(0, visitado, false);
+    delete[] visitado;
+
+    // percorre as arvores atribuindo o custo a cada um dos vertices, partindo do prototipo
+    visitado = new bool[size];
+    for(int c : prototipos)
+        gerarCustos(c, visitado, 0);
 }
 
 /**
@@ -253,6 +243,45 @@ void OPF::primsAlg(){
         }
     }
     setMatrizAdj(nMatriz);
+}
+
+/**
+ * @brief método que realiza uma "busca por profundidade" no grafo
+ * para encontrar os protótipos.
+ * 
+ * @param v vértice atual 
+ * @param visitado vetor que guarda o estado atual dos vértices quanto a busca.
+ */
+void OPF::DFS_EncontraPrototipo(int v, bool *visitado, bool jaEncontrado) {
+    if(!visitado[v]){ // verifica se o vértice ja foi visitado
+        visitado[v] = true; // se nao foi, marca como visitado.
+        for(int i = 0; i < size && !jaEncontrado; i++) {
+            if(matrizAdj[v][i] != -1){ // procura vertices adjacentes ao atual
+                if(vertices.at(i).get_class() != vertices.at(v).get_class()) {
+                    prototipos.push_back(v);
+                    prototipos.push_back(i);
+                    matrizAdj[v][i] = matrizAdj[i][v] = -1;
+                    jaEncontrado = !jaEncontrado;
+                    return;
+                }
+                DFS_EncontraPrototipo(i, visitado, jaEncontrado); // quando acha, vai para o vertice encontrado recursivamente.
+            }
+        }
+    }
+}
+
+void OPF::gerarCustos(int v, bool *visitado, double maiorPeso) {
+    double MP;
+    if(!visitado[v]){ // verifica se o vértice ja foi visitado
+        vertices[v].set_custo(maiorPeso);
+        visitado[v] = true; // se nao foi, marca como visitado.
+        for(int i = 0; i < size; i++) {
+            if(matrizAdj[v][i] != -1){ // procura vertices adjacentes ao atual
+                MP = matrizAdj[v][i] > maiorPeso ? matrizAdj[v][i] : maiorPeso;
+                gerarCustos(i, visitado, MP); // quando acha, vai para o vertice encontrado recursivamente.
+            }
+        }
+    }
 }
 
 #endif
