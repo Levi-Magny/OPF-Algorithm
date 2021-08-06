@@ -37,6 +37,7 @@ private:
     void excluiMatrizAdj();
     void DFS_EncontraPrototipo(int v, bool *visitado, bool jaEncontrado);
     void gerarCustos(int v, bool *visitado, double maiorPeso);
+    void encontraClasse();
 public:
     OPF(){
         // buscarVertices("./files/banana.txt");
@@ -45,6 +46,8 @@ public:
         size = vertices.size();
         criarMatriz(size);
         gerarOPF();
+        treinamento();
+        encontraClasse();
     }
     ~OPF(){
         excluiMatrizAdj();
@@ -56,6 +59,21 @@ public:
     void primsAlg();
     void treinamento();
 };
+
+void OPF::encontraClasse() {
+    Vertice vertice = Vertice(0.05513566, 0.5597890);
+    double dist, maior;
+    iPar menorEclasse;
+    menorEclasse.first = INF;
+    for(int i = 0; i < size; i++) {
+        dist = calcEuclDist(vertices.at(i), vertice);
+        maior = dist > vertices.at(i).get_custo() ? dist : vertices.at(i).get_custo();
+        menorEclasse.first = menorEclasse.first > maior ? maior : menorEclasse.first;
+        menorEclasse.second = i;
+    }
+    cout << "O vertice tem custo: " << menorEclasse.first << ". Pertence a classe: " 
+    << vertices.at(menorEclasse.second).get_class() << endl;
+}
 
 /**
  * @brief Modifica a matrizAdj

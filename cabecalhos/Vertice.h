@@ -22,7 +22,7 @@ public:
      * @param yc Coordenada y do vertice
      * @param classe classe do vertice
      */
-    Vertice(double xc, double yc, int classe){
+    Vertice(double xc, double yc, int classe = -1) {
         x = xc;
         y = yc;
         nClasse = classe;
