@@ -12,11 +12,16 @@
 #include "Vertice.h"
 using namespace std;
 
+
+/**
+ * @brief Definindo limite do double como infinito
+ * 
+ */
 const double INF = numeric_limits<double>::max();
 
 /**
- * @brief 
- * O primeiro valor é o custo e o segundo e o indice do vertice
+ * @brief O primeiro valor é o custo e o segundo e o indice do vertice
+ * 
  */
 typedef pair<double, int> iPar;
 
@@ -26,23 +31,28 @@ typedef pair<double, int> iPar;
  */
 class OPF {
 private:
-    int tamanho;
-    vector<Vertice> vertices;
-    double **matrizAdj;
     int size;
+    int tamanho;
+    double **matrizAdj;
+    double** novaMatriz();
     vector<int> prototipos;
+    vector<Vertice> vertices;
+    void primsAlg();
+    void gerarOPF();
+    void treinamento();
+    void excluiMatrizAdj();
     void criarMatriz(int size);
+    void setMatrizAdj(double** MAdj);
     bool buscarVertices(string path);
     double calcEuclDist(Vertice& a, Vertice& b);
-    void setMatrizAdj(double** MAdj);
-    void excluiMatrizAdj();
-    void DFS_EncontraPrototipo(int v, bool *visitado, bool jaEncontrado);
     void gerarCustos(int v, bool *visitado, double maiorPeso);
-    double** novaMatriz();
-    void primsAlg();
-    void treinamento();
-    void gerarOPF();
+    void DFS_EncontraPrototipo(int v, bool *visitado, bool jaEncontrado);
 public:
+    /**
+     * @brief Construtor do objeto OPF
+     * 
+     * @param path Caminho (string) para o arquivo desejado
+     */
     OPF(string path){
         buscarVertices(path);
         size = vertices.size();
@@ -53,8 +63,6 @@ public:
     ~OPF(){
         excluiMatrizAdj();
     }
-    int getSize(){return vertices.size();}
-    double matrizValue(int i, int j){return matrizAdj[i][j];}
     void Classificar(Vertice vertice);
 };
 
@@ -67,17 +75,10 @@ public:
 void OPF::setMatrizAdj(double** MAdj){
     excluiMatrizAdj();
     matrizAdj = MAdj;
-    // for(int i = 0; i < size; i++) {
-    //     cout << i << "::=> ";
-    //     for(int j = 0; j < size; j++) {
-    //         cout << matrizAdj[i][j] << " ";
-    //     }
-    //     cout << endl;
-    // }
 };
 
 /**
- * @brief metodo para desalocar a memoria alocada
+ * @brief Metodo para desalocar a memoria alocada
  * 
  */
 void OPF::excluiMatrizAdj(){
@@ -108,11 +109,11 @@ void OPF::gerarOPF(){
 }
 
 /**
- * @brief Calcula a distancia euclidiana entre dois pontos em R3
+ * @brief Calcula a distancia euclidiana entre dois pontos
  * 
- * @param a 
- * @param b 
- * @return double distancia entre 2 pontos
+ * @param a Vertice a
+ * @param b Vertice b
+ * @return Distancia entre 2 pontos (em double)
  */
 double OPF::calcEuclDist(Vertice& a, Vertice& b){
     return sqrt(pow((b.get_x() - a.get_x()),2) + pow((b.get_y() - a.get_y()),2));
@@ -131,19 +132,16 @@ void OPF::criarMatriz(int size){
 }
 
 /**
- * @brief busca as coordenadas dos vertices dentro dos seus respectivos arquivos.
+ * @brief Busca as coordenadas dos vertices dentro dos seus respectivos arquivos.
  * 
  * @param path Caminho do arquivo contendo os vértices.
- * @param classe Classe a qual o vertice pertence.
- * @return true se conseguir abrir o arquivo.
- * @return false se nao conseguir abrir o arquivo.
+ * @return True se conseguir abrir o arquivo. False se nao conseguir abrir o arquivo.
  */
 bool OPF::buscarVertices(string path){
     ifstream file(path);
     string qtdV, algo;
     int qtdC;
     file >> qtdV >> algo >> qtdC;
-    // getline(file, firstLine);
     if(file.is_open()){
         while (!file.eof()){
             string x, y;
@@ -177,6 +175,10 @@ double** OPF::novaMatriz(){
     return matriz;
 }
 
+/**
+ * @brief Etapa de treinamento
+ * 
+ */
 void OPF::treinamento(){
     // Gerando MST
     primsAlg();
@@ -193,7 +195,7 @@ void OPF::treinamento(){
 }
 
 /**
- * @brief Algoritmo de Prim para Minimum Spanning Tree
+ * @brief Algoritmo de Prim para Minimum Spanning Tree (MST)
  * 
  */
 void OPF::primsAlg(){
@@ -248,17 +250,18 @@ void OPF::primsAlg(){
 }
 
 /**
- * @brief método que realiza uma "busca por profundidade" no grafo
+ * @brief Método que realiza uma "busca por profundidade" no grafo
  * para encontrar os protótipos.
  * 
- * @param v vértice atual 
- * @param visitado vetor que guarda o estado atual dos vértices quanto a busca.
+ * @param v Vértice atual 
+ * @param visitado Vetor que guarda o estado atual dos vértices quanto a busca.
+ * @param jaEncontrado Verifica se os protótipos já foram encontrados
  */
 void OPF::DFS_EncontraPrototipo(int v, bool *visitado, bool jaEncontrado) {
-    if(!visitado[v]){ // verifica se o vértice ja foi visitado
-        visitado[v] = true; // se nao foi, marca como visitado.
+    if(!visitado[v]){
+        visitado[v] = true;
         for(int i = 0; i < size && !jaEncontrado; i++) {
-            if(matrizAdj[v][i] != -1){ // procura vertices adjacentes ao atual
+            if(matrizAdj[v][i] != -1){
                 if(vertices.at(i).get_class() != vertices.at(v).get_class()) {
                     prototipos.push_back(v);
                     prototipos.push_back(i);
@@ -266,30 +269,39 @@ void OPF::DFS_EncontraPrototipo(int v, bool *visitado, bool jaEncontrado) {
                     jaEncontrado = !jaEncontrado;
                     return;
                 }
-                DFS_EncontraPrototipo(i, visitado, jaEncontrado); // quando acha, vai para o vertice encontrado recursivamente.
+                DFS_EncontraPrototipo(i, visitado, jaEncontrado); 
             }
         }
     }
 }
 
+/**
+ * @brief Método que gera os custos dos vértices
+ * 
+ * @param v Vértice atual 
+ * @param visitado Vetor que guarda o estado atual dos vértices quanto a busca.
+ * @param maiorPeso Maior peso encontrado até o momento
+ */
 void OPF::gerarCustos(int v, bool *visitado, double maiorPeso) {
     double MP;
-    if(!visitado[v]){ // verifica se o vértice ja foi visitado
+    if(!visitado[v]){
         vertices[v].set_custo(maiorPeso);
-        visitado[v] = true; // se nao foi, marca como visitado.
+        visitado[v] = true;
         for(int i = 0; i < size; i++) {
-            if(matrizAdj[v][i] != -1){ // procura vertices adjacentes ao atual
+            if(matrizAdj[v][i] != -1){
                 MP = matrizAdj[v][i] > maiorPeso ? matrizAdj[v][i] : maiorPeso;
-                gerarCustos(i, visitado, MP); // quando acha, vai para o vertice encontrado recursivamente.
+                gerarCustos(i, visitado, MP);
             }
         }
     }
 }
 
+/**
+ * @brief 
+ * 
+ * @param vertice Vértice escolhido para ser verificado
+ */
 void OPF::Classificar(Vertice vertice) {
-
-    // cout << calcEuclDist(vertice, vertices[0]);
-
     double dist, maior;
     iPar menorEclasse;
     menorEclasse.first = INF;
@@ -301,7 +313,7 @@ void OPF::Classificar(Vertice vertice) {
             menorEclasse.second = i;
         }
     }
-    cout << "O vertice tem custo: " << menorEclasse.first << ". Pertence a classe: " 
+    cout << endl << "O vertice tem custo: " << menorEclasse.first << ". Pertence a classe: " 
     << vertices.at(menorEclasse.second).get_class() << endl;
 }
 
