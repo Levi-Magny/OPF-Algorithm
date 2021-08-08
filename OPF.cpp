@@ -30,7 +30,7 @@ string menu_arquivo() {
  */
 void menu_vertice(OPF &g) {
    double x, y;
-   int escolha;
+   int escolha = 1;
    do {
       cout << endl << "Escolha as coordenadas para o ponto" << endl;
       cout << "X: ";

@@ -184,6 +184,7 @@ void OPF::treinamento(){
     visitado = new bool[size];
     for(int c : prototipos)
         gerarCustos(c, visitado, 0);
+    delete[] visitado;
 }
 
 /**
@@ -258,7 +259,7 @@ void OPF::DFS_EncontraPrototipo(int v, bool *visitado) {
                     prototipos.push_back(v);
                     prototipos.push_back(i);
                     matrizAdj[v][i] = matrizAdj[i][v] = -1;
-                    return;
+                    // return;
                 }
                 DFS_EncontraPrototipo(i, visitado); 
             }
@@ -274,8 +275,8 @@ void OPF::DFS_EncontraPrototipo(int v, bool *visitado) {
  * @param maiorPeso Maior peso encontrado até o momento
  */
 void OPF::gerarCustos(int v, bool *visitado, double maiorPeso) {
-    double MP;
     if(!visitado[v]){
+        double MP;
         if(vertices[v].get_custo() > maiorPeso)
             vertices[v].set_custo(maiorPeso);
         visitado[v] = true;
