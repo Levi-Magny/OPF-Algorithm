@@ -5,19 +5,11 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <limits>
 #include <math.h>
 #include <queue>
 #include <algorithm>
 #include "Vertice.h"
 using namespace std;
-
-
-/**
- * @brief Definindo limite do double como infinito
- * 
- */
-const double INF = numeric_limits<double>::max();
 
 /**
  * @brief O primeiro valor é o custo e o segundo e o indice do vertice
@@ -46,7 +38,7 @@ private:
     bool buscarVertices(string path);
     double calcEuclDist(Vertice& a, Vertice& b);
     void gerarCustos(int v, bool *visitado, double maiorPeso);
-    void DFS_EncontraPrototipo(int v, bool *visitado, bool jaEncontrado);
+    void DFS_EncontraPrototipo(int v, bool *visitado);
 public:
     /**
      * @brief Construtor do objeto OPF
@@ -57,7 +49,9 @@ public:
         buscarVertices(path);
         size = vertices.size();
         criarMatriz(size);
+        cout << "\n########## Gerar Grafo ##########\n";
         gerarOPF();
+        cout << "\n###### Iniciar Treinamento ######\n";
         treinamento();
     }
     ~OPF(){
@@ -144,8 +138,7 @@ bool OPF::buscarVertices(string path){
     file >> qtdV >> algo >> qtdC;
     if(file.is_open()){
         while (!file.eof()){
-            string x, y;
-            int classe;
+            string x, y, classe;
             file >> x >> y >> classe;
 
             Vertice nv = Vertice(stod(x), stod(y), classe);
@@ -185,7 +178,7 @@ void OPF::treinamento(){
 
     // encontrando prototipos
     bool *visitado = new bool[size];
-    DFS_EncontraPrototipo(0, visitado, false);
+    DFS_EncontraPrototipo(0, visitado);
     delete[] visitado;
 
     // percorre as arvores atribuindo o custo a cada um dos vertices, partindo do prototipo
@@ -257,19 +250,18 @@ void OPF::primsAlg(){
  * @param visitado Vetor que guarda o estado atual dos vértices quanto a busca.
  * @param jaEncontrado Verifica se os protótipos já foram encontrados
  */
-void OPF::DFS_EncontraPrototipo(int v, bool *visitado, bool jaEncontrado) {
+void OPF::DFS_EncontraPrototipo(int v, bool *visitado) {
     if(!visitado[v]){
         visitado[v] = true;
-        for(int i = 0; i < size && !jaEncontrado; i++) {
+        for(int i = 0; i < size; i++) {
             if(matrizAdj[v][i] != -1){
                 if(vertices.at(i).get_class() != vertices.at(v).get_class()) {
                     prototipos.push_back(v);
                     prototipos.push_back(i);
                     matrizAdj[v][i] = matrizAdj[i][v] = -1;
-                    jaEncontrado = !jaEncontrado;
                     return;
                 }
-                DFS_EncontraPrototipo(i, visitado, jaEncontrado); 
+                DFS_EncontraPrototipo(i, visitado); 
             }
         }
     }
@@ -285,7 +277,8 @@ void OPF::DFS_EncontraPrototipo(int v, bool *visitado, bool jaEncontrado) {
 void OPF::gerarCustos(int v, bool *visitado, double maiorPeso) {
     double MP;
     if(!visitado[v]){
-        vertices[v].set_custo(maiorPeso);
+        if(vertices[v].get_custo() > maiorPeso)
+            vertices[v].set_custo(maiorPeso);
         visitado[v] = true;
         for(int i = 0; i < size; i++) {
             if(matrizAdj[v][i] != -1){

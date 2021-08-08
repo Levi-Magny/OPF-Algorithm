@@ -2,7 +2,14 @@
 #define VERTICE_H
 
 #include <iostream>
+#include <limits>
 using namespace std;
+
+/**
+ * @brief Definindo limite do double como infinito
+ * 
+ */
+const double INF = numeric_limits<double>::max();
 
 /**
  * @brief Classe geral para um vertice do grafo
@@ -12,8 +19,8 @@ class Vertice {
 private:
     double x;
     double y;
-    int nClasse;
-    double custo;
+    string nClasse;
+    double custo = INF;
 public:
     /**
      * @brief Construtor do objeto Vertice
@@ -22,7 +29,7 @@ public:
      * @param yc Coordenada y do vertice
      * @param classe Classe do vertice
      */
-    Vertice(double xc, double yc, int classe = -1) {
+    Vertice(double xc, double yc, string classe = "null") {
         x = xc;
         y = yc;
         nClasse = classe;
@@ -70,7 +77,7 @@ public:
      * 
      * @return classe
      */
-    int get_class(){
+    string get_class(){
         return nClasse;
     }
 
@@ -79,7 +86,7 @@ public:
      * 
      * @param valor Nova classe
      */
-    void set_class(int valor){
+    void set_class(string valor){
         nClasse = valor;
     }
 };
