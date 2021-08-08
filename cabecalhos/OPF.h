@@ -289,7 +289,11 @@ void OPF::gerarCustos(int v, bool *visitado, double maiorPeso) {
 }
 
 /**
+<<<<<<< HEAD
  * @brief Algoritmo utilizado para a classificação de novas amostras.
+=======
+ * @brief Classifica o vertice escolhido
+>>>>>>> f8fee801a59d611e26a1397483157792ec3387b1
  * 
  * @param vertice Vértice escolhido para ser verificado
  */
