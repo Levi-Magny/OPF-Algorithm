@@ -24,7 +24,6 @@ typedef pair<double, int> iPar;
 class OPF {
 private:
     int size;
-    int tamanho;
     double **matrizAdj;
     double** novaMatriz();
     vector<int> prototipos;
@@ -290,7 +289,7 @@ void OPF::gerarCustos(int v, bool *visitado, double maiorPeso) {
 }
 
 /**
- * @brief 
+ * @brief Algoritmo utilizado para a classificação de novas amostras.
  * 
  * @param vertice Vértice escolhido para ser verificado
  */
