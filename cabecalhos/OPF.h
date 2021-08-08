@@ -290,7 +290,7 @@ void OPF::gerarCustos(int v, bool *visitado, double maiorPeso) {
 }
 
 /**
- * @brief 
+ * @brief Classifica o vertice escolhido
  * 
  * @param vertice Vértice escolhido para ser verificado
  */

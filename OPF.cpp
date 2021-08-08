@@ -24,18 +24,25 @@ string menu_arquivo() {
 }
 
 /**
- * @brief Menu para criar vertice
+ * @brief Menu para o usuário escolher um ponto
  * 
- * @return Vertice com X e Y definidos pelo usuário
+ * @param g Referência do do objeto OPF criado no main
  */
-Vertice menu_vertice() {
+void menu_vertice(OPF &g) {
    double x, y;
-   cout << endl << "Escolha as coordenadas para o ponto" << endl;
-   cout << "X: ";
-   cin >> x;
-   cout << "Y: ";
-   cin >> y;
-   return Vertice(x,y);
+   int escolha;
+   do {
+      cout << endl << "Escolha as coordenadas para o ponto" << endl;
+      cout << "X: ";
+      cin >> x;
+      cout << "Y: ";
+      cin >> y;
+      g.Classificar(Vertice(x,y));
+
+      cout << endl << "Deseja classificar outro ponto ? [1 = Sim] [0 = Nao]";
+      cout << "Escolha: ";
+      cin >> escolha;
+   } while(escolha != 0);
 }
 
 int main() {
@@ -43,6 +50,6 @@ int main() {
    // Cria g com os dados do arquivo escolhido
    OPF g(menu_arquivo());
 
-   // Classifica o vertice escolhido
-   g.Classificar(menu_vertice());
+   // 
+   menu_vertice(g);
 }
