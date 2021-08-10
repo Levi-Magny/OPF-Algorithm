@@ -176,15 +176,15 @@ void OPF::treinamento(){
     primsAlg();
 
     // encontrando prototipos
-    bool *visitado = new bool[size];
-    DFS_EncontraPrototipo(0, visitado);
-    delete[] visitado;
+    bool *visitado1 = new bool[size] {false};
+    DFS_EncontraPrototipo(0, visitado1);
+    delete[] visitado1;
 
     // percorre as arvores atribuindo o custo a cada um dos vertices, partindo do prototipo
-    visitado = new bool[size];
+    bool *visitado2 = new bool[size] {false};
     for(int c : prototipos)
-        gerarCustos(c, visitado, 0);
-    delete[] visitado;
+        gerarCustos(c, visitado2, 0);
+    delete[] visitado2;
 }
 
 /**
@@ -272,7 +272,7 @@ void OPF::DFS_EncontraPrototipo(int v, bool *visitado) {
  * 
  * @param v Vértice atual 
  * @param visitado Vetor que guarda o estado atual dos vértices quanto a busca.
- * @param maiorPeso Maior peso encontrado até o momento
+ * @param maiorPeso Maior peso (aresta) encontrado até o momento
  */
 void OPF::gerarCustos(int v, bool *visitado, double maiorPeso) {
     if(!visitado[v]){
@@ -303,7 +303,7 @@ void OPF::Classificar(Vertice vertice) {
         maior = dist > vertices.at(i).get_custo() ? dist : vertices.at(i).get_custo();
         if (menorEclasse.first > maior){
             menorEclasse.first = maior;
-            menorEclasse.second = i;
+            menorEclasse.second = i; // vertice que conquistou a amostra
         }
     }
     cout << endl << "O vertice tem custo: " << menorEclasse.first << ". Pertence a classe: " 

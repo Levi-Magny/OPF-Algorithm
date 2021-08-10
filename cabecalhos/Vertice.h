@@ -20,7 +20,7 @@ private:
     double x;
     double y;
     string nClasse;
-    double custo = INF;
+    double custo;
 public:
     /**
      * @brief Construtor do objeto Vertice
@@ -33,7 +33,7 @@ public:
         x = xc;
         y = yc;
         nClasse = classe;
-        custo = -1.0;
+        custo = INF;
     }
 
     /**

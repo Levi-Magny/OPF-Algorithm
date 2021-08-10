@@ -14,9 +14,9 @@ string menu_arquivo() {
    cin >> escolha;
 
    if(escolha == 1)
-      return "./files/banana.txt";
+      return "./datasets/banana.txt";
    else if(escolha == 2)
-      return "./files/spirals.txt";
+      return "./datasets/spirals.txt";
    else {
       cout << endl << "Essa opcao nao existe" << endl << endl;
       return menu_arquivo();
